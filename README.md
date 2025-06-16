@@ -1,9 +1,3 @@
-**API Project Documentation**
-
----
-
-### Overview
-
 This API project is designed to **download Pinterest media directly through WhatsApp**. Users can send Pinterest links to a connected WhatsApp number, and the system automatically processes and replies with the downloadable media content.
 
 It is built using PHP and provides a lightweight API structure, ideal for quick integrations or microservices. The code is organized with a main entry point, configuration setup, and a dedicated API endpoint.
