@@ -1,4 +1,4 @@
-<img src="https://i.ibb.co/m5hMjSmp/Pinterest-Whats-App-Downloader.png" width="120" alt="Pinterest Logo"/>
+![Pinterest WhatsApp Downloader Hero Image](https://i.ibb.co/m5hMjSmp/Pinterest-Whats-App-Downloader.png)
 
 <h1 align="center">Pinterest WhatsApp Downloader</h1>
 
