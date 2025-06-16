@@ -46,8 +46,8 @@
 
     ```php
     define('PINTEREST_API_BASE', 'https://api.amitdas.site/Pinterest/api/');
-    define('TEXTSNAP_INSTANCE_ID', 'YOUR_INSTANCE_ID');
-    define('TEXTSNAP_ACCESS_TOKEN', 'YOUR_ACCESS_TOKEN');
+    define('WHATSAPP_INSTANCE_ID', 'YOUR_INSTANCE_ID');
+    define('WHATSAPP_ACCESS_TOKEN', 'YOUR_ACCESS_TOKEN');
     ```
 
     > Get your WhatsApp API credentials from [textsnap.in](https://textsnap.in/)
