@@ -1,4 +1,4 @@
-<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Pinterest_Logo.svg/1024px-Pinterest_Logo.svg.png" width="120" alt="Pinterest Logo"/>
+<img src="https://i.ibb.co/m5hMjSmp/Pinterest-Whats-App-Downloader.png" width="120" alt="Pinterest Logo"/>
 
 <h1 align="center">Pinterest WhatsApp Downloader</h1>
 
