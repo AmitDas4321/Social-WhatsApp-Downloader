@@ -16,8 +16,8 @@ This file defines global configuration variables and functions used across the p
 define('PINTEREST_API_BASE', 'https://api.amitdas.site/Pinterest/api/');
 
 // WhatsApp API config
-define('WHATSAPP_INSTANCE_ID', '6778CD9E32DE3');
-define('WHATSAPP_ACCESS_TOKEN', '677846eb647bc');
+define('WHATSAPP_INSTANCE_ID', 'XXXXXXXXXXXXX');
+define('WHATSAPP_ACCESS_TOKEN', 'XXXXXXXXXXXXX');
 
 function sanitize_input($data) {
     return htmlspecialchars(strip_tags(trim($data)));
