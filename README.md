@@ -1,7 +1,7 @@
 <h1 align="center">Pinterest WhatsApp Downloader</h1>
 
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/108335208/279916915-6dc196e8-0cf2-4c0b-8e99-2f60d97b0a0a.png" width="120" alt="Pinterest Logo"/>
+  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Pinterest_Logo.svg/1024px-Pinterest_Logo.svg.png" width="120" alt="Pinterest Logo"/>
 </p>
 <p align="center">
   <b>Download Pinterest videos and media directly to WhatsApp using a lightweight PHP API</b>
