@@ -104,7 +104,7 @@ https://in.pinterest.com/pin/996632592567664852/
 
 ## 👨‍💻 Author
 
-| [<img src="https://avatars.githubusercontent.com/u/108335208?v=4" width="60" alt="Amit Das"/>](https://amitdas.site) |
+| [<img src="https://avatars.githubusercontent.com/u/112541611?v=4" width="60" alt="Amit Das"/>](https://amitdas.site) |
 |:---:|
 | [Amit Das](https://amitdas.site) |
 
