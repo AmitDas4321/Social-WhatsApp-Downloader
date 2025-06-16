@@ -131,8 +131,8 @@ $payload = [
     "type" => "media",
     "message" => $title,
     "media_url" => $MediaUrl,
-    "instance_id" => TEXTSNAP_INSTANCE_ID,
-    "access_token" => TEXTSNAP_ACCESS_TOKEN
+    "instance_id" => WHATSAPP_INSTANCE_ID,
+    "access_token" => WHATSAPP_ACCESS_TOKEN
 ];
 $ch = curl_init("https://textsnap.in/api/send");
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
