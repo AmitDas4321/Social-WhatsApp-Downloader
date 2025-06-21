@@ -1,6 +1,6 @@
 <?php
 // Pinterest downloader API base URL (without "?url=")
-define('PINTEREST_API_BASE', 'https://api.amitdas.site/Pinterest/api/');
+define('API_BASE', 'https://api.amitdas.site/Pinterest/api/');
 
 // WhatsApp API config
 define('WHATSAPP_INSTANCE_ID', 'YOUR_INSTANCE_ID');
