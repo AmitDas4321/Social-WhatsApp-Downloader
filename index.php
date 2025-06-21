@@ -74,22 +74,34 @@ if (!preg_match('/^(\d+)@/', $remoteJid, $matchesNumber)) {
 }
 $number = $matchesNumber[1];
 
-// 3. Extract Pinterest link (support all Pinterest pin URL variants)
-if (
-    !preg_match(
-        '#(https://pin\.it/[a-zA-Z0-9]+|https://(?:[a-z]+\.)?pinterest\.[a-z]+/pin/\d+/?)#',
-        $messageText,
-        $matchesPin
-    )
-) {
-    debug_log("No Pinterest link found in: $messageText");
-    exit("❌ No Pinterest link found in message.");
+// 3. Extract a supported video link (Pinterest, Facebook, Instagram, YouTube, etc.)
+$videoRegexes = [
+    // Pinterest
+    '#(https://pin\.it/[a-zA-Z0-9]+|https://(?:[a-z]+\.)?pinterest\.[a-z]+/pin/\d+/?)#',
+    // Facebook
+    '#https://(www\.)?facebook\.[a-z]+/[^ ]+#',
+    // Instagram
+    '#https://(www\.)?instagram\.[a-z]+/[^ ]+#',
+    // YouTube
+    '#(https://(www\.)?(youtube\.com/watch\?v=|youtu\.be/)[\w\-]+)#'
+];
+$linkFound = '';
+foreach ($videoRegexes as $regex) {
+    if (preg_match($regex, $messageText, $matches)) {
+        $linkFound = $matches[0];
+        break;
+    }
 }
-$pinterestUrl = $matchesPin[0];
-debug_log("Pinterest URL: $pinterestUrl");
+if (!$linkFound) {
+    debug_log("No supported video link found in: $messageText");
+    exit("❌ No supported video link found in message.");
+}
+debug_log("Detected video URL: $linkFound");
 
-// 4. Fetch video using cURL
-$apiUrl = PINTEREST_API_BASE . '?url=' . urlencode($pinterestUrl);
+// 4. Use a single downloader API for all links
+$apiUrl = API_BASE . '?url=' . urlencode($linkFound);
+
+// 5. Fetch video using cURL
 $ch = curl_init($apiUrl);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
@@ -118,14 +130,14 @@ if (
     $responseData['status'] !== 'success' ||
     empty($responseData['media_url'])
 ) {
-    debug_log("Failed Pinterest API or bad response: $apiResponse");
-    exit("❌ Failed to fetch Pinterest video. Raw response: " . $apiResponse);
+    debug_log("Failed Downloader API or bad response: $apiResponse");
+    exit("❌ Failed to fetch video. Raw response: " . $apiResponse);
 }
 $MediaUrl = $responseData['media_url'];
-$title = $responseData['title'] ?? 'Pinterest Video';
+$title = $responseData['title'] ?? 'Video';
 debug_log("Video URL: $MediaUrl, Title: $title");
 
-// 5. Send to WhatsApp API using cURL
+// 6. Send to WhatsApp API using cURL
 $payload = [
     "number" => $number,
     "type" => "media",
