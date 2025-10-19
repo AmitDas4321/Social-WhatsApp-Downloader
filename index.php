@@ -83,7 +83,7 @@ $videoRegexes = [
     // Instagram
     '#https://(www\.)?instagram\.[a-z]+/[^ ]+#',
     // YouTube
-    '#(https://(www\.)?(youtube\.com/watch\?v=|youtu\.be/)[\w\-]+)#'
+    '#https:\/\/(?:www\.)?youtube\.com\/shorts\/[\w\-]+#'
 ];
 $linkFound = '';
 foreach ($videoRegexes as $regex) {
