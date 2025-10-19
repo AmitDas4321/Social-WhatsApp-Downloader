@@ -1,13 +1,21 @@
 ![Pinterest WhatsApp Downloader Hero Image](https://i.ibb.co/m5hMjSmp/Pinterest-Whats-App-Downloader.png)
 
-<h1 align="center">Pinterest WhatsApp Downloader</h1>
+<h1 align="center">Social WhatsApp Downloader</h1>
 
 <p align="center">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Pinterest_Logo.svg/1024px-Pinterest_Logo.svg.png" width="120" alt="Pinterest Logo"/>
+  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Pinterest_Logo.svg/1024px-Pinterest_Logo.svg.png" width="80" alt="Pinterest Logo"/>
+  &nbsp;&nbsp;
+  <img src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg" width="80" alt="Instagram Logo"/>
+  &nbsp;&nbsp;
+  <img src="https://upload.wikimedia.org/wikipedia/commons/1/1b/Facebook_icon.svg" width="80" alt="Facebook Logo"/>
+  &nbsp;&nbsp;
+  <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" width="120" alt="YouTube Logo"/>
 </p>
+
 <p align="center">
-  <b>Download Pinterest videos and media directly to WhatsApp using a lightweight PHP API</b>
+  <b>Download videos and images from Pinterest, Instagram, Facebook, and YouTube directly to WhatsApp using a lightweight PHP API</b>
 </p>
+
 <p align="center">
   <a href="#-features">Features</a> •
   <a href="#-configuration">Configuration</a> •
@@ -24,19 +32,21 @@
 
 ## 📌 Overview
 
-**Pinterest WhatsApp Downloader** lets you send Pinterest links to your WhatsApp, and receive the media (videos/images) back within seconds. The system listens for incoming WhatsApp webhook messages, extracts valid Pinterest URLs, downloads the media, and replies via WhatsApp with the downloadable content.
+**Social WhatsApp Downloader** allows you to send links from multiple social media platforms — **Pinterest, Instagram, Facebook, and YouTube** — to your WhatsApp number and instantly receive the media file back (videos or images).
+The system automatically detects valid URLs, downloads the media, and sends it back via WhatsApp using a simple webhook-based setup.
 
-> **Built with PHP** — lightweight, fast, and deployable on any standard server.
+> **Built with PHP** — lightweight, fast, and easily deployable on any shared or VPS server.
 
 ---
 
 ## 🚀 Features
 
-- ⚡️ Download videos and images from Pinterest directly via WhatsApp
-- 🔗 Webhook-based automation (no polling required)
-- 📝 Built-in debug logging system
-- 🪶 Lightweight, fast, and no database required
-- 💬 Easy to set up and use
+* ⚡️ Download from **Pinterest**, **Instagram**, **Facebook**, and **YouTube**
+* 📱 Supports **Reels**, **Shorts**, and regular videos
+* 🔗 Instant WhatsApp automation via webhook (no polling)
+* 🪶 Zero database dependency
+* 🧩 Regex-based URL detection for multiple platforms
+* 📝 Debug logging system included
 
 ---
 
@@ -44,19 +54,19 @@
 
 1. **Edit `config.php`:**
 
-    ```php
-    define('API_BASE', 'https://wadownloader.amitdas.site/api/');
-    define('WHATSAPP_INSTANCE_ID', 'YOUR_INSTANCE_ID');
-    define('WHATSAPP_ACCESS_TOKEN', 'YOUR_ACCESS_TOKEN');
-    ```
+   ```php
+   define('API_BASE', 'https://wadownloader.amitdas.site/api/');
+   define('WHATSAPP_INSTANCE_ID', 'YOUR_INSTANCE_ID');
+   define('WHATSAPP_ACCESS_TOKEN', 'YOUR_ACCESS_TOKEN');
+   ```
 
-    > Get your WhatsApp API credentials from [textsnap.in](https://textsnap.in/)
+   > Get your WhatsApp API credentials from [textsnap.in](https://textsnap.in/)
 
 ---
 
 ## 🔗 Set Webhook
 
-Once your files are uploaded to a PHP server, set your webhook:
+After uploading your files to a PHP-supported server, set the webhook with the following command:
 
 ```
 https://textsnap.in/api/set_webhook?webhook_url=https://yourwebsite.com/index.php&enable=true&instance_id=YOUR_INSTANCE_ID&access_token=YOUR_ACCESS_TOKEN
@@ -69,8 +79,8 @@ https://textsnap.in/api/set_webhook?webhook_url=https://yourwebsite.com/index.ph
 1. **Deploy** the code to any PHP-supported server.
 2. **Configure** your `config.php` file.
 3. **Set** the webhook URL using the endpoint above.
-4. **Send** a Pinterest link to your WhatsApp number.
-5. **Receive** the media directly in your WhatsApp chat! 🎥✅
+4. **Send** any supported link (Pinterest, Instagram, Facebook, or YouTube) to your WhatsApp number.
+5. **Receive** the media directly in your WhatsApp chat! 🎬✅
 
 ---
 
@@ -86,29 +96,38 @@ https://textsnap.in/api/set_webhook?webhook_url=https://yourwebsite.com/index.ph
 
 ## 📸 Example
 
-**Send a message:**
+**Send a message on WhatsApp:**
+
+```
+https://youtube.com/shorts/c_07yu5BekI?si=4ukjWk8rtJmwXmpJ
+```
+
+**Or:**
 
 ```
 https://in.pinterest.com/pin/996632592567664852/
+https://www.instagram.com/reel/XXXXXXXX/
+https://www.facebook.com/watch/?v=XXXXXXXX
 ```
 
-**And receive the downloadable video automatically.**
+**And receive the downloadable video automatically within seconds!**
 
 ---
 
 ## 📌 To Do
 
-- [ ] Add support for image downloading
-- [ ] Add Telegram integration
-- [ ] Add web UI preview
+* [ ] Add custom caption formatting for WhatsApp replies
+* [ ] Add Telegram bot integration
+* [ ] Add web-based preview interface
+* [ ] Add multi-quality video support (SD/HD)
 
 ---
 
 ## 👨‍💻 Author
 
 | [<img src="https://avatars.githubusercontent.com/u/112541611?v=4" width="60" alt="Amit Das"/>](https://amitdas.site) |
-|:---:|
-| [Amit Das](https://amitdas.site) |
+| :------------------------------------------------------------------------------------------------------------------: |
+|                                           [Amit Das](https://amitdas.site)                                           |
 
 ---
 
@@ -117,3 +136,5 @@ https://in.pinterest.com/pin/996632592567664852/
 This project is licensed under the [MIT License](LICENSE).
 
 ---
+
+Would you like me to make a **matching project title image** (for example “Social WhatsApp Downloader – Supports Pinterest, Instagram, Facebook & YouTube”) using your same style banner? I can generate that too.
