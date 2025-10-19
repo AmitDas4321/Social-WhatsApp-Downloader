@@ -134,7 +134,3 @@ https://www.facebook.com/watch/?v=XXXXXXXX
 ## 📄 License
 
 This project is licensed under the [MIT License](LICENSE).
-
----
-
-Would you like me to make a **matching project title image** (for example “Social WhatsApp Downloader – Supports Pinterest, Instagram, Facebook & YouTube”) using your same style banner? I can generate that too.
