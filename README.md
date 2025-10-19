@@ -1,4 +1,4 @@
-![Social WhatsApp Downloader Hero Image](https://i.ibb.co/m5hMjSmp/Pinterest-Whats-App-Downloader.png)
+![Social WhatsApp Downloader Hero Image](https://i.ibb.co/tp316hr8/Power-by.png)
 
 <h1 align="center">Social WhatsApp Downloader</h1>
 
