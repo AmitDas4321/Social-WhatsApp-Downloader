@@ -1,0 +1,8 @@
+{
+  "functions": {
+    "*.php": { "runtime": "[email protected]" }
+  },
+  "routes": [
+    { "src": "/(.*)", "dest": "/index.php" }
+  ]
+}
