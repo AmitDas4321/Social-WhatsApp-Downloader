@@ -105,7 +105,7 @@ $apiUrl = API_BASE . '?url=' . urlencode($linkFound);
 $ch = curl_init($apiUrl);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-curl_setopt($ch, CURLOPT_TIMEOUT, 20);
+curl_setopt($ch, CURLOPT_TIMEOUT, 40); // Prefer 20 
 $apiResponse = curl_exec($ch);
 if (curl_errno($ch)) {
     $error_msg = curl_error($ch);
