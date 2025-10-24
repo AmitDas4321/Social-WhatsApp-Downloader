@@ -123,6 +123,17 @@ https://www.facebook.com/watch/?v=XXXXXXXX
 
 ---
 
+## 🧩 Node.js Version
+
+If you prefer using **Node.js**, check out the Node.js version of this project here:  
+👉 [**Social WhatsApp Downloader (Node.js)**](https://github.com/AmitDas4321/Social-WhatsApp-Downloader-Node-JS-Version)
+
+This version runs seamlessly on **Vercel**, **Render**, or any Node-supported platform,  
+and provides the same WhatsApp automation features for downloading from  
+**Pinterest**, **Instagram**, **Facebook**, and **YouTube**.
+
+---
+
 ## 👨‍💻 Author
 
 | [<img src="https://avatars.githubusercontent.com/u/112541611?v=4" width="60" alt="Amit Das"/>](https://amitdas.site) |
