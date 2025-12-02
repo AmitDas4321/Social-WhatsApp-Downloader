@@ -82,6 +82,8 @@ $videoRegexes = [
     '#https://(www\.)?facebook\.[a-z]+/[^ ]+#',
     // Instagram
     '#https://(www\.)?instagram\.[a-z]+/[^ ]+#',
+    // TeraBox
+    '#https?://(?:[A-Za-z0-9\.-]*terabox[A-Za-z0-9\.-]*\.[A-Za-z]{2,})(?:/[^ ]*)?#',
     // YouTube
     '#https:\/\/(?:www\.)?youtube\.com\/shorts\/[\w\-]+#'
 ];
