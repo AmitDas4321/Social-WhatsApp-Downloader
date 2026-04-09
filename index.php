@@ -31,34 +31,31 @@ if (!$data) {
 $event = $data['data']['event'] ?? '';
 debug_log("Webhook event type: $event");
 
-// Only process message webhooks
-if ($event !== 'received_message' && $event !== 'messages.upsert') {
-    debug_log("Ignoring non-message event: $event");
-    exit("⚠️ Ignoring non-message event.");
+// ===== ONLY PROCESS messages.upsert =====
+// This prevents duplicate processing from received_message and contacts.update
+if ($event !== 'messages.upsert') {
+    debug_log("Ignoring event (only processing messages.upsert): $event");
+    exit("⚠️ Ignoring event: $event");
 }
 
+debug_log("Processing messages.upsert event");
+
 // 2. Robustly extract WhatsApp number and message
-// Handle both webhook formats
-if ($event === 'received_message') {
-    // Format 3: received_message event
-    $bodyMsg = $data['data']['message']['body_message'] ?? [];
-    $messageKey = $data['data']['message']['message_key'] ?? [];
-} else {
-    // Format 2: messages.upsert event
-    $messages = $data['data']['data']['messages'] ?? [];
-    if (empty($messages)) {
-        debug_log("No messages in webhook");
-        exit("❌ No messages found in webhook.");
-    }
-    $firstMessage = $messages[0];
-    $messageKey = $firstMessage['key'] ?? [];
-    
-    // Extract message text from extendedTextMessage
-    $bodyMsg = [
-        'messages' => $firstMessage['message'] ?? [],
-        'content' => $firstMessage['message']['extendedTextMessage']['text'] ?? ''
-    ];
+// Handle messages.upsert format
+$messages = $data['data']['data']['messages'] ?? [];
+if (empty($messages)) {
+    debug_log("No messages in webhook");
+    exit("❌ No messages found in webhook.");
 }
+
+$firstMessage = $messages[0];
+$messageKey = $firstMessage['key'] ?? [];
+
+// Extract message text from extendedTextMessage
+$bodyMsg = [
+    'messages' => $firstMessage['message'] ?? [],
+    'content' => $firstMessage['message']['extendedTextMessage']['text'] ?? ''
+];
 
 $remoteJid = $messageKey['remoteJid'] ?? '';
 $remoteJidAlt = $messageKey['remoteJidAlt'] ?? '';
