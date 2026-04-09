@@ -4,7 +4,7 @@ header('Content-Type: application/json');
 require_once __DIR__ . '/config.php';
 
 // ====== ENABLE OR DISABLE DEBUG LOGGING HERE ======
-$DEBUG_LOG = false; // Set to false to disable debug.log file logging
+$DEBUG_LOG = true; // Set to false to disable debug.log file logging
 // ================================================
 
 // Helper function for debug logging
@@ -27,23 +27,56 @@ if (!$data) {
     exit("❌ JSON decode error.");
 }
 
+// Check which type of webhook this is
+$event = $data['data']['event'] ?? '';
+debug_log("Webhook event type: $event");
+
+// Only process message webhooks
+if ($event !== 'received_message' && $event !== 'messages.upsert') {
+    debug_log("Ignoring non-message event: $event");
+    exit("⚠️ Ignoring non-message event.");
+}
+
 // 2. Robustly extract WhatsApp number and message
-$bodyMsg = $data['data']['message']['body_message'] ?? [];
-$remoteJid = $data['data']['message']['message_key']['remoteJid'] ?? '';
+// Handle both webhook formats
+if ($event === 'received_message') {
+    // Format 3: received_message event
+    $bodyMsg = $data['data']['message']['body_message'] ?? [];
+    $messageKey = $data['data']['message']['message_key'] ?? [];
+} else {
+    // Format 2: messages.upsert event
+    $messages = $data['data']['data']['messages'] ?? [];
+    if (empty($messages)) {
+        debug_log("No messages in webhook");
+        exit("❌ No messages found in webhook.");
+    }
+    $firstMessage = $messages[0];
+    $messageKey = $firstMessage['key'] ?? [];
+    
+    // Extract message text from extendedTextMessage
+    $bodyMsg = [
+        'messages' => $firstMessage['message'] ?? [],
+        'content' => $firstMessage['message']['extendedTextMessage']['text'] ?? ''
+    ];
+}
+
+$remoteJid = $messageKey['remoteJid'] ?? '';
+$remoteJidAlt = $messageKey['remoteJidAlt'] ?? '';
+
+debug_log("remoteJid: $remoteJid, remoteJidAlt: $remoteJidAlt");
 
 // IGNORE LOGIC FOR GROUPS, BROADCASTS, NEWSLETTERS, ETC.
 $ignoreJidPatterns = [
-    '@g.us',           // WhatsApp groups
-    '@broadcast',      // Broadcast lists
-    '@newsletter',     // Newsletter
-    'status@broadcast',// Status updates
-    '@lid',            // Some group variations
-    '-@g.us',          // Groups with dash
-    'g.us',            // Just the domain part
-    'broadcast',       // Just broadcast
-    'newsletter',      // Just newsletter
-    'status',          // Status messages all
+    '@g.us',              // WhatsApp groups
+    '@broadcast',         // Broadcast lists
+    '@newsletter',        // Newsletter
+    'status@broadcast',   // Status updates
+    '-@g.us',             // Groups with dash
+    'broadcast',          // Just broadcast
+    'newsletter',         // Just newsletter
+    'status',             // Status messages all
 ];
+
 foreach ($ignoreJidPatterns as $pattern) {
     if (stripos($remoteJid, $pattern) !== false) {
         debug_log("Ignored remoteJid (matched pattern '$pattern'): $remoteJid");
@@ -68,11 +101,26 @@ if (!$messageText || !$remoteJid) {
     exit("❌ Invalid webhook format.");
 }
 
-if (!preg_match('/^(\d+)@/', $remoteJid, $matchesNumber)) {
-    debug_log("Invalid remoteJid: $remoteJid");
+// Extract phone number - PREFER remoteJidAlt format
+$number = '';
+
+// First try remoteJidAlt (this has the correct WhatsApp format)
+if (!empty($remoteJidAlt) && preg_match('/^(\d+)@/', $remoteJidAlt, $matchesNumber)) {
+    $number = $matchesNumber[1];
+    debug_log("Using phone number from remoteJidAlt: $number");
+} 
+// Fallback to remoteJid
+elseif (preg_match('/^(\d+)@/', $remoteJid, $matchesNumber)) {
+    $number = $matchesNumber[1];
+    debug_log("Using phone number from remoteJid: $number");
+}
+
+if (!$number) {
+    debug_log("Could not extract phone number from remoteJid or remoteJidAlt");
     exit("❌ Invalid remoteJid format.");
 }
-$number = $matchesNumber[1];
+
+debug_log("Final phone number to send: $number");
 
 // 3. Extract a supported video link (Pinterest, Facebook, Instagram, YouTube, etc.)
 $videoRegexes = [
@@ -84,9 +132,12 @@ $videoRegexes = [
     '#https://(www\.)?instagram\.[a-z]+/[^ ]+#',
     // TeraBox
     '#https?://(?:[A-Za-z0-9\.-]*terabox[A-Za-z0-9\.-]*\.[A-Za-z]{2,})(?:/[^ ]*)?#',
-    // YouTube
-    '#https:\/\/(?:www\.)?youtube\.com\/shorts\/[\w\-]+#'
+    // YouTube Shorts
+    '#https:\/\/(?:www\.)?youtube\.com\/shorts\/[\w\-]+#',
+    // YouTube Regular videos
+    '#https:\/\/(?:www\.)?youtube\.com\/watch\?v=[\w\-]+#'
 ];
+
 $linkFound = '';
 foreach ($videoRegexes as $regex) {
     if (preg_match($regex, $messageText, $matches)) {
@@ -94,6 +145,7 @@ foreach ($videoRegexes as $regex) {
         break;
     }
 }
+
 if (!$linkFound) {
     debug_log("No supported video link found in: $messageText");
     exit("❌ No supported video link found in message.");
@@ -107,7 +159,11 @@ $apiUrl = API_BASE . '?url=' . urlencode($linkFound);
 $ch = curl_init($apiUrl);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-curl_setopt($ch, CURLOPT_TIMEOUT, 40); // Prefer 20 
+curl_setopt($ch, CURLOPT_MAXREDIRS, 5);
+curl_setopt($ch, CURLOPT_TIMEOUT, 40);
+curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+
 $apiResponse = curl_exec($ch);
 if (curl_errno($ch)) {
     $error_msg = curl_error($ch);
@@ -135,6 +191,7 @@ if (
     debug_log("Failed Downloader API or bad response: $apiResponse");
     exit("❌ Failed to fetch video. Raw response: " . $apiResponse);
 }
+
 $MediaUrl = $responseData['media_url'];
 $title = $responseData['title'] ?? 'Video';
 debug_log("Video URL: $MediaUrl, Title: $title");
@@ -148,10 +205,22 @@ $payload = [
     "instance_id" => WHATSAPP_INSTANCE_ID,
     "access_token" => WHATSAPP_ACCESS_TOKEN
 ];
+
+debug_log("WhatsApp API Payload: " . json_encode($payload));
+
 $ch = curl_init("https://textsnap.in/api/send");
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
-curl_setopt($ch, CURLOPT_HTTPHEADER, ["Content-Type: application/json"]);
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    "Content-Type: application/json",
+    "Accept: application/json"
+]);
+curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+curl_setopt($ch, CURLOPT_MAXREDIRS, 5);
+curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+
 $result = curl_exec($ch);
 if (curl_errno($ch)) {
     $error_msg = curl_error($ch);
@@ -160,13 +229,24 @@ if (curl_errno($ch)) {
     exit("❌ WhatsApp API curl error: $error_msg");
 }
 $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+$redirect_url = curl_getinfo($ch, CURLINFO_REDIRECT_URL);
 curl_close($ch);
-debug_log("WhatsApp API HTTP code: $http_code\nWhatsApp API response: $result");
 
-if ($http_code !== 200) {
+debug_log("WhatsApp API HTTP code: $http_code");
+debug_log("WhatsApp API Redirect URL: $redirect_url");
+debug_log("WhatsApp API response: $result");
+
+if ($http_code !== 200 && $http_code !== 201) {
     debug_log("WhatsApp API HTTP error: $http_code");
     exit("❌ WhatsApp API HTTP error: $http_code\nRaw response: $result");
 }
 
 debug_log("✅ Video sent successfully!");
-echo "✅ Video sent successfully!";
+echo json_encode([
+    "status" => "success",
+    "message" => "✅ Video sent successfully!",
+    "phone_number" => $number,
+    "video_url" => $linkFound,
+    "http_code" => $http_code
+]);
+?>
